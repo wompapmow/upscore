@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% block content %}
+    <center>
+    <img src= {{ url_for('static', filename = 'images/arrow.jpg') }} width="100" height="100" border="0">
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.before.label }}<br>
+            {{ form.before }}
+        </p>
+        <p>
+            {{ form.after.label }}<br>
+            {{ form.after }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    </center>
+{% endblock %}
+</body>
+</html>
