@@ -1,1 +1,28 @@
-tr:nth-child(odd) {background-color: #f3f3f3;}
+tr:nth-child(odd) {
+    background-color: #f3f3f3;
+}
+.scores-table {
+    border-collapse: collapse;
+    text-align: left;
+}
+.scores-table td {
+    padding: 5px 10px;
+}
+.scores-40-plus {
+
+}
+.scores-20-40{
+
+}
+.scores-10-20{
+
+}
+.scores-5-10{
+
+}
+.scores-1-5{
+
+}
+.scores-0-1{
+
+}

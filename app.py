@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SubmitField
 from os import urandom
-
 import score
 
 app = Flask(__name__)
@@ -21,11 +20,10 @@ def input(songs=None):
     form = ScoreInput()
     if request.method == 'POST':
         songs = score.output(request.form['before'], request.form['after'])
-        print(songs)
         # return redirect(url_for('score_output', songs))
         return render_template('scores.html', songs=songs)
 
     return render_template('index.html', form=form)
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run(host='0.0.0.0', port=8080)

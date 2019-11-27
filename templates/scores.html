@@ -8,11 +8,27 @@
 <body>
 <img src= {{ url_for('static', filename = 'images/arrow.jpg') }} width="100" height="100" border="0">
 {% block content %}
-<table>
+<br /><br />
+<table class="scores-table">
 {% for song in songs %}
     <tr class="{{ loop.cycle('odd', 'even') }}">
-        <td>{{ song.name }} <b>{{ song.chart }} {{ song.difficulty }}</b></td>
-        <td>{{ song.upscore }}</td>
+        <td><b>{{ song.chart }} {{ song.difficulty }}</b></td>
+        <td>{{ song.name }} </td>
+        <td>{{ song.score }} </td>
+        {% if song.upscore is defined and song.upscore %}
+            <td>{{ song.score + song.upscore }}</td>
+            <td>+{{ song.upscore }}</td>
+        {% endif %}
+        <td>
+        {% if song.uprank %}
+            {{ song.rank }} → {{ song.uprank }}
+        {% endif %}
+        </td>
+        <td>
+        {% if song.upcombo %}
+            {{ song.combo }} → {{ song.upcombo }}
+        {% endif %}
+        </td>
     </tr>
 {% endfor %}
 </table>

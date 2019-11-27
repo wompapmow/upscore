@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='upscore',
     version='0.0.1',
-    packages=['Flask','flask_wtf','wtforms'],
+    packages=['flask','flask_wtf','wtforms'],
     url='',
     license='',
     author='kdickinson',
