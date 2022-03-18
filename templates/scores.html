@@ -10,23 +10,33 @@
 {% block content %}
 <br /><br />
 <table class="scores-table">
+<tr><th>Chart</th><th>Rating</th><th>Title</th><th>Score</th><th>Change</th><th>Rank</th><th>Combo Type</th></tr>
 {% for song in songs %}
     <tr class="{{ loop.cycle('odd', 'even') }}">
-        <td><b>{{ song.chart }} {{ song.difficulty }}</b></td>
+        <b>
+            <td>{{ song.chart }}</td>
+            <td>{{ song.difficulty }}</td>
+        </b>
         <td>{{ song.name }} </td>
-        <td>{{ song.score }} </td>
-        {% if song.upscore is defined and song.upscore %}
-            <td>{{ song.score + song.upscore }}</td>
-            <td>+{{ song.upscore }}</td>
+        {% if song.scores[0] < song.scores[1] %}
+            <td>{{ song.scores[0] }} → {{ song.scores[1] }}</td>
+            <td>+{{ song.scores[1] - song.scores[0] }}</td>
+        {% else %}
+            <td>{{ song.scores[0] }}</td>
+            <td>--</td>
         {% endif %}
         <td>
-        {% if song.uprank %}
-            {{ song.rank }} → {{ song.uprank }}
+        {% if song.ranks[0] != song.ranks[1] %}
+            {{ song.ranks[0] }} → {{ song.ranks[1] }}
+        {% else %}
+            {{ song.ranks[0] }}
         {% endif %}
         </td>
         <td>
-        {% if song.upcombo %}
-            {{ song.combo }} → {{ song.upcombo }}
+        {% if song.combos[0] != song.combos[1] %}
+            {{ song.combos[0] }} → {{ song.combos[1] }}
+        {% else %}
+            {{ song.combos[0] }}
         {% endif %}
         </td>
     </tr>

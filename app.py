@@ -8,9 +8,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(32)
 
 class ScoreInput(FlaskForm):
-    before = TextAreaField('Before', render_kw={"rows": 25, "cols": 80})
-    after = TextAreaField('After', render_kw={"rows": 25, "cols": 80})
-    submit = SubmitField("Can I call you a dancing master?")
+    before = TextAreaField('Before', render_kw={"rows": 20, "cols": 80})
+    after = TextAreaField('After', render_kw={"rows": 20, "cols": 80})
+    submit = SubmitField("Can I call you a dancing master?")  # add a bank of random lines for flavor text
 
 class ScoreOutput(object):
     pass
@@ -23,7 +23,10 @@ def input(songs=None):
         # return redirect(url_for('score_output', songs))
         return render_template('scores.html', songs=songs)
 
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form)  # TODO: Add icons for combo types
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    # https://flask.palletsprojects.com/en/2.0.x/tutorial/deploy/
+    # https://www.devdungeon.com/content/run-python-wsgi-web-app-waitress
+    #serve(app, host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=573)

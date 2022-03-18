@@ -3,11 +3,31 @@ tr:nth-child(odd) {
 }
 .scores-table {
     border-collapse: collapse;
+    border-width: 0;
+    width: 100%;
     text-align: left;
+    /*column-count: 7;*/
+    /*column-gap: 10%;*/
+    /*row-gap: 3%;*/
 }
-.scores-table td {
+.scores-table td,th {
+    margin: 10px 0px;
     padding: 5px 10px;
+    /*padding: horizontal vertical*/
 }
+
+.scores-table td {
+}
+
+.scores-table th {
+    /*padding-bottom: 5px;*/
+    background-color: #138fe8;
+    color: #ffffff;
+    font-weight: bold;
+    /*font-style: */
+    text-decoration: underline;
+}
+
 .scores-40-plus {
 
 }

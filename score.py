@@ -1,47 +1,54 @@
+rank_types = ('AAA','AA+','AA','AA-','A+','A','A-','B+','B','B-','C+','C','C-','D+','D','E','-')
+combo_types = ('MFC','PFC','FC','GFC','Life4','NoFC')
+
 class Song(object):
-    def __init__(self, parts, update=False):
-        self.name = ' '.join(map(str, reversed(parts[6:])))
-        self.chart = parts[5]
-        self.difficulty = parts[4].strip('()')
-        self.rank = parts[3]
-        self.score = int(parts[2].replace(',', '')[:7])
-        self.combo = parts[1]
-        self.playcount = int(parts[0].strip('()')[-4:])
-        self.upscore = 0
-        self.uprank = None
-        self.upcombo = None
-        if self.rank == '-':
-            self.rank = ''
 
-    def __lt__(self, other):
-        return self.upscore < other.upscore
+    def __init__(self, old_val, new_val):
+        # These values stay constant, can use either old or new
+        self.name = ' '.join(map(str, reversed(old_val[6:])))
+        self.chart = old_val[5]
+        self.difficulty = old_val[4].strip('()')
+        self.maxcombo = 0 # need to parse this from fmt_scores()
+        # tuple (old, new)  - could consider a third bool value to encapsulate improvement instead of separate values (eg upscore) but tuples are immutable?
+        self.ranks = (old_val[3], new_val[3])
+        self.scores = self.fmt_scores(old_val[2], new_val[2]) # returns tuple like others
+        self.combos = (old_val[1], new_val[1])
+        self.plays = self.fmt_playcounts(old_val[0], new_val[0]) # returns tuple like others
+        self.upscore, self.uprank, self.upcombo = self.diff()  # returns bool
+#        self.uprank = self.check_uprank()
 
-    def diff(self, other):
-        if other.score > self.score:
-            self.upscore = other.score-self.score
-            if other.rank != self.rank:
-                self.uprank = other.rank
-            if other.combo != self.combo:
-                self.upcombo = other.combo
+    def diff(self):
+        upscore = uprank = upcombo = 0
+        if self.scores[0] < self.scores[1]:
+            upscore = self.scores[1] - self.scores[0]
+        if self.ranks[0] != self.ranks[1]:
+        #if rank_types.index(self.ranks[0]) < rank_types.index(self.ranks[1]) this logic isn't exactly necessary as SM A is smart about overwriting good values only; similar tuple exists for combos
+            uprank = True
+        if self.combos[0] != self.combos[1]:
+            upcombo = True 
+        return upscore, uprank, upcombo
 
-def output(before, after):
-    songs = {}
+# Overriding built-in to accomodate using sorted()
+#    def __lt__(self):
+#        return self.upscore < updated.upscore
 
-    for line in before.splitlines():
-        try:
-            song = Song(line.split()[::-1])
-            songs[f'{song.name} {song.chart}'] = song
-        except:
-            pass
+    # could probably clean these up using named tuples
+    def fmt_scores(self, old, new):
+        return (int(old.replace(',', '')[:7]), int(new.replace(',', '')[:7]))
+    
+    def fmt_playcounts(self, old, new):
+        return (int(old.strip('()')[-4:]), int(new.strip('()')[-4:]))
 
-    for line in after.splitlines():
-        try:
-            song = Song(line.split()[::-1])
-            k = f'{song.name} {song.chart}'
-            if songs[k]:
-               songs[k].diff(song)
-        except:
-            pass
 
-    return sorted(songs.values(), reverse=True)
-        # return f'{song.name} {song.chart} {song.difficulty}: +{song.upscore}'
+def output(prev, updated):  # could probably change this to stale, updated
+    songs_changed = []
+    songs_prev = prev.splitlines()
+    songs_updated = updated.splitlines()  
+    assert len(songs_prev) == len(songs_updated) # add error handling to this
+
+    for idx in range(len(songs_prev)):
+        song = Song(songs_prev[idx].split()[::-1], songs_updated[idx].split()[::-1])
+        if song.upscore or song.uprank or song.upcombo:
+            songs_changed.append(song)
+
+    return sorted(songs_changed, key=lambda x: x.upscore, reverse=True) # add secondary sort for difficult or fullcombo
